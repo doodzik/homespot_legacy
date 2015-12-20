@@ -12,16 +12,15 @@ if(isset($_POST['email'])) {
   if(count($error) == 0) {
     $uuid = gen_uuid();
     update_token($db, $uuid, $email);
-    if(is_production())
-      send_login_mail($email, $uuid);
-    else
-      echo("http://localhost:8080/auth/confirm.php?token=$uuid");
-    include "$root/html/auth/confirm.php";
+    if(!is_production())
+      die("http://localhost:8080/auth/confirm.php?token=$uuid");
+    send_login_mail($email, $uuid);
+    header('Location: ../confirm.php');
     exit();
   }
 }
 
-echo html(title('hello world'),
+echo html(title('Homespot - Sign In/Up'),
           nav() .
           content(
             h1("Sign In/Up") .

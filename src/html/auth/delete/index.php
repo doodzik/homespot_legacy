@@ -1,6 +1,5 @@
 <?php
-include('../init.php')
+session_start();
+session_destroy();
+header("Location: /index.php");
 ?>
-
-<h1>Index</h1>
-<p><?php echo "PHP"; ?></p>

@@ -13,13 +13,17 @@
               </body>
             </html>";
   }
-    
+
   function title ($name) {
     return "<title>$name</title>";
   }
 
   function content ($content) {
     return "<div id=\"content\">$content</div>";
+  }
+
+  function p ($content) {
+    return "<p>$content</p>";
   }
 
   function h1 ($content) {
@@ -34,7 +38,7 @@
 
   function input_err ($error, $name) {
     if(isset($error[$name])) {
-      $err_val = $error[$name]; 
+      $err_val = $error[$name];
       return "<lable class=\"error\">$err_val</lable>";
     }
     return '';

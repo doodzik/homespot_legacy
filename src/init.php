@@ -15,5 +15,5 @@ if(!is_production()) {
 
 require('db.php');
 require('auth.php');
-require('xml/nav.php');
+require('html_fn/html_fn.php');
 ?>
