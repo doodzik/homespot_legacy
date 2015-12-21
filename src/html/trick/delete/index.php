@@ -11,8 +11,6 @@ if(empty($_GET['name']) && empty($_POST['name'])) {
   exit();
 }
 
-$name = $_GET['name'];
-
 if(isset($_POST['name'])) {
   $sql = "DELETE FROM TRICK WHERE name = :name";
   $stmt = $db->prepare($sql);
@@ -22,9 +20,7 @@ if(isset($_POST['name'])) {
   exit();
 }
 
-function hidden($field, $value) {
-  return "<input type=\"hidden\" name=\"$field\" value=\"$value\">";
-}
+$name = $_GET['name'];
 
 echo html(title('Homespot - Delete Trick'),
           nav() .

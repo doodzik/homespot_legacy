@@ -6,5 +6,6 @@ echo html(title('Homespot - Delete Trick'),
           nav() .
           content(
             h1('About') .
-            p('abaut what')));
+            p('abaut what') .
+            a('check out the source code', 'https://github.com/doodzik/homespot')));
 ?>

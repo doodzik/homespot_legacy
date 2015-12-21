@@ -87,6 +87,10 @@
     return input('text', $name, $placeholder);
   }
 
+  function hidden($field, $value) {
+    return "<input type=\"hidden\" name=\"$field\" value=\"$value\">";
+  }
+
   function submit ($value = 'Submit') {
     return "<input type=\"submit\" value=\"$value\">";
   }
