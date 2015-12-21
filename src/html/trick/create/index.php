@@ -2,6 +2,8 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
+redirect_not_authed(); 
+
 $error = array();
 
 if(isset($_POST['name'])) {
@@ -37,7 +39,7 @@ if(isset($_POST['name'])) {
     }
     $stmt -> execute();
 
-    header('Location: /index.php');
+    header('Location: /');
     exit();
   }
 }

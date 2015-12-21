@@ -15,10 +15,10 @@ if(empty($_GET['name']) && empty($_POST['name'])) {
 if(isset($_POST['name'])) {
   $sql = "UPDATE TRICK SET name = :name
             WHERE name = :old_name";
-  $stmt = $db->prepare($sql);                                  
-  $stmt->bindParam(':name', $_POST['name'], PDO::PARAM_STR);       
-  $stmt->bindParam(':old_name', $_POST['old_name'], PDO::PARAM_STR);    
-  $stmt->execute(); 
+  $stmt = $db->prepare($sql);
+  $stmt->bindParam(':name', $_POST['name'], PDO::PARAM_STR);
+  $stmt->bindParam(':old_name', $_POST['old_name'], PDO::PARAM_STR);
+  $stmt->execute();
 
   header('Location: /tricks');
   exit();
@@ -31,7 +31,7 @@ echo html(title('Homespot - Edit Trick'),
           content(
             h1("Edit Trick") .
             p("you wanted to edit: $name") .
-            p('no editing of the prefix yet') . 
+            p('no editing of the prefix yet') .
             form('post',
               hidden('old_name', $name).
               text('name').
