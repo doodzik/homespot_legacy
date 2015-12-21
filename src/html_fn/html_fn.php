@@ -22,6 +22,10 @@
     return "<div id=\"content\">$content</div>";
   }
 
+  function div ($content) {
+    return "<div>$content</div>";
+  }
+
   function p ($content) {
     return "<p>$content</p>";
   }
@@ -36,11 +40,18 @@
     return "<form action=\"$path\" method=\"$request\">$content</form>";
   }
 
+  function lable ($value, $class = '') {
+      if(strlen($class) > 0)
+        $class = "class=\"$class\"";
+      return "<lable $class >$value</lable>";
+  }
+
   function input_err ($error, $name) {
     if(isset($error[$name])) {
       $err_val = $error[$name];
-      return "<lable class=\"error\">$err_val</lable>";
+      return lable($err_val, 'error');
     }
+
     return '';
   }
 
@@ -55,13 +66,28 @@
     return $input;
   }
 
+  function checkbox ($name, $checked = true) {
+    $checked = ($checked) ? 'checked' : '';
+    return "<input type=\"checkbox\" name=\"$name\" $checked/>";
+  }
+
+  function text ($name ='', $placeholder = '') {
+    return input('text', $name, $placeholder);
+  }
+
   function submit ($value = 'Submit') {
     return "<input type=\"submit\" value=\"$value\">";
   }
 
   function nav () {
     return "<nav>
-            <a href=\"#\">hello world</a>
-          </nav>";
+              <a href=\"/\">Home</a>
+              <a href=\"/tricks/create\">Create Trick</a>
+              <a href=\"/\">All Tricks</a>
+              <a href=\"/\">Create Tag</a>
+              <a href=\"/\">All Tags</a>
+              <a href=\"/\">Sign In/Up</a>
+              <a href=\"/\">Logout</a>
+            </nav>";
   }
 ?>
