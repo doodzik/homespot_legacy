@@ -80,14 +80,21 @@
   }
 
   function nav () {
-    return "<nav>
+    if(logged_in()) {
+      $str = "
               <a href=\"/\">Home</a>
               <a href=\"/tricks/create\">Create Trick</a>
               <a href=\"/\">All Tricks</a>
               <a href=\"/\">Create Tag</a>
               <a href=\"/\">All Tags</a>
-              <a href=\"/\">Sign In/Up</a>
-              <a href=\"/\">Logout</a>
+              <a href=\"auth/delete/index.php\">Logout</a>
+      ";
+    } else {
+      $str = "<a href=\"/\">Sign In/Up</a>";
+    }
+    return "<nav>
+              $str
+              <a href=\"/about\">About</a>
             </nav>";
   }
 ?>

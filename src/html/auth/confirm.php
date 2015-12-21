@@ -6,9 +6,9 @@ if(isset($_GET['token'])) {
   $token = $_GET['token'];
   $stmt  =  $db->prepare("SELECT user_id
                             FROM USER
-                            WHERE token=?
+                            WHERE token=:token
                             LIMIT 1");
-  $stmt->bind_param("s", $token);
+  $stmt->bindValue(":token", $token);
   $stmt->execute();
   $row = $stmt->fetch();
   if(isset($row))
@@ -21,6 +21,5 @@ echo html(title('Homespot - Sign In/Up Confirmation'),
           nav() .
           content(
             h1("Sign In/Up Confirmation") .
-            p("Check your email account and login by clicking the link that was sent to you")
-            ));
+            p("Check your email account and login by clicking the link that was sent to you")));
 ?>

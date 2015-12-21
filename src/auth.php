@@ -31,6 +31,16 @@ function send_login_mail ($to, $token) {
   mail($to, $subject, $message, $headers);
 }
 
+function create_user($db, $uuid, $email) {
+  $sql = '';
+  $statement = $db->prepare('INSERT INTO USER (token, token_time, email) VALUES (:token, :token_time, :email)');
+  $statement->bindValue(":token", $uuid);
+  $statement->bindValue(":token_time", date('Y-m-d H:i:s', time()));
+  $statement->bindValue(":email", $email);
+  $count = $statement->execute();
+  return $count;
+}
+
 function update_token($db, $uuid, $email) {
   $statement = $db->prepare('UPDATE `USER`
                               SET `token` = :token,
@@ -47,12 +57,26 @@ function logged_in() {
   return isset($_SESSION['user_id']);
 }
 
+function redirect_authed() {
+  if(logged_in()) {
+    header('Location: /index.php');
+    exit();
+  }
+}
+
+function redirect_not_authed() {
+  if(!logged_in()) {
+    header('Location: /auth/create/index.php');
+    exit();
+  }
+}
+
 if(logged_in()){
     $stmt  =  $db->prepare("SELECT user_id, token, token_time
                               FROM USER
-                              WHERE user_id=?
+                              WHERE user_id=:user_id
                               LIMIT 1");
-    $stmt->bind_param("s", $_SESSION['user_id']);
+    $stmt->bindValue(':user_id', $_SESSION['user_id']);
     $stmt->execute();
     $row = $stmt->fetch();
     if(isset($row))
