@@ -30,8 +30,20 @@
     return "<p>$content</p>";
   }
 
+  function ul ($content) {
+    return "<ul>$content</ul>";
+  }
+
+  function li ($content) {
+    return "<li>$content</li>";
+  }
+
   function h1 ($content) {
     return "<h1>$content</h1>";
+  }
+
+  function a ($content, $link = '#') {
+    return "<a href=\"$link\">$content</a>";
   }
 
   function form ($request, $content) {
@@ -79,22 +91,22 @@
     return "<input type=\"submit\" value=\"$value\">";
   }
 
+  // TODO rename nav
+  function _nav ($content) {
+    return "<nav>$content</nav>";
+  }
+
   function nav () {
     if(logged_in()) {
-      $str = "
-              <a href=\"/\">Home</a>
-              <a href=\"/tricks/create\">Create Trick</a>
-              <a href=\"/\">All Tricks</a>
-              <a href=\"/\">Create Tag</a>
-              <a href=\"/\">All Tags</a>
-              <a href=\"auth/delete/index.php\">Logout</a>
-      ";
+      $str = a('Home', '/') .
+             a('Create Trick', '/trick/create') .
+             a('All Tricks', '/tricks') .
+             a('Create Tag', '/tag/create') .
+             a('All Tags', '/tags') .
+             a('Logout', 'auth/delete');
     } else {
-      $str = "<a href=\"/\">Sign In/Up</a>";
+      $str = a('Sign In/Up', '/auth/create');
     }
-    return "<nav>
-              $str
-              <a href=\"/about\">About</a>
-            </nav>";
+    return _nav($str . a('About', '/about'));
   }
 ?>

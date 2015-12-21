@@ -59,7 +59,7 @@ function logged_in() {
 
 function redirect_authed() {
   if(logged_in()) {
-    header('Location: /index.php');
+    header('Location: /');
     exit();
   }
 }

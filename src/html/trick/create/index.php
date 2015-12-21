@@ -4,12 +4,6 @@ require "$root/init.php";
 
 $error = array();
 
-function validate_name($name) {
-  if(strlen($name >= 150))
-    return 'name too long';
-  return '';
-}
-
 if(isset($_POST['name'])) {
   $prefixes = array();
   foreach ($_POST['stance'] as $key => $value) {
@@ -26,29 +20,25 @@ if(isset($_POST['name'])) {
 
   $name = $_POST['name'];
   $name_err = validate_name($name);
-  if(strlen($name_err) > 0) {
+  if(strlen($name_err) > 0)
     $error['name'] = $name_err;
-    if(count($error) == 0) {
-      $sql = 'INSERT INTO TRICKS (prefix, name, reset, user_id) VALUES ';
-      $insertQuery = array();
-      $insertData = array();
-      foreach ($prefixes as $prefix) {
-          $insertQuery[] = '(?, ?, ?, ?)';
-          $insertData[] = $prefix;
-          $insertData[] = $name;
-          $insertData[] = date('Y-m-d H:i:s', time());
-          $insertData[] = $_SESSION['user_id'];
-      }
-
-      if (!empty($insertQuery)) {
-          $sql .= implode(', ', $insertQuery);
-          $stmt = $db->prepare($sql);
-          $stmt->execute($insertData);
-      }
-
-      header('Location: /index.php');
-      exit();
+  if(count($error) == 0) {
+    $query = 'INSERT INTO TRICK (prefix, name, reset, user_id) VALUES ';
+    $insertData = array();
+    $qPart = array_fill(0, count($prefixes), "(?, ?, ?, ?)");
+    $query .=  implode(",",$qPart);
+    $stmt = $db -> prepare($query);
+    $i = 1;
+    foreach($prefixes as $prefix) { //bind the values one by one
+        $stmt->bindValue($i++, $prefix);
+        $stmt->bindValue($i++, $name);
+        $stmt->bindValue($i++, date('Y-m-d H:i:s', time()));
+        $stmt->bindValue($i++, $_SESSION['user_id']);
     }
+    $stmt -> execute();
+
+    header('Location: /index.php');
+    exit();
   }
 }
 
