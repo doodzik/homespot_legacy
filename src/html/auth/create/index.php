@@ -13,11 +13,17 @@ if(isset($_POST['email'])) {
     $error['email'] = $email_err;
   if(count($error) == 0) {
     $uuid = gen_uuid();
-    $count = update_token($db, $uuid, $email);
-    if($count == 0)
+    update_token($db, $uuid, $email);
+
+    $statement = $db->prepare('SELECT user_id FROM USER WHERE email = :email LIMIT 1');
+    $statement->bindValue(":email", $email);
+    $statement->execute();
+    $row = $statement->fetchAll();
+
+    if(count($row) == 0)
       create_user($db, $uuid, $email);
     if(!is_production())
-      die("http://localhost:8080/auth/confirm.php?token=$uuid");
+      die("<a href='http://localhost:8080/auth/confirm.php?token=$uuid'>login</a>");
     send_login_mail($email, $uuid);
     header('Location: ../confirm.php');
     exit();

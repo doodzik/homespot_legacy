@@ -117,7 +117,7 @@
              a('All Tricks', '/tricks') .
              a('Create Tag', '/tag/create') .
              a('All Tags', '/tags') .
-             a('Logout', 'auth/delete');
+             a('Logout', '/auth/delete');
     } else {
       $str = a('Sign In/Up', '/auth/create');
     }
