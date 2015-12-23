@@ -4,12 +4,12 @@ require "$root/init.php";
 
 redirect_not_authed();
 
-function trick_name($stance, $direction, $name) {
+function trick_name($stance, $direction, $tag, $name) {
   if($direction == 'none')
     $direction = '';
   if($stance == 'normal')
     $stance = '';
-  return trim($stance . ' ' . $direction . ' ' . $name);
+  return trim($stance . ' ' . $direction . ' ' . $name . ': ' . $tag);
 }
 
 
@@ -74,9 +74,10 @@ if(isset($_GET['tag_names'])) {
   $filters  = 'all';
 }
 
-$statement = $db->prepare('SELECT tn.name, t.stance, t.direction, t.trick_id
+$statement = $db->prepare('SELECT tn.name, t.stance, t.direction, t.trick_id, TAG.name as tag_name
                              FROM TRICK as t
                              LEFT JOIN TRICK_NAME as tn ON tn.trick_name_id = t.trick_name_id
+                             LEFT JOIN TAG ON t.tag_id = TAG.tag_id
                              WHERE t.user_id = :user_id
                                AND `reset` <= :now
                              ORDER BY `name` ASC');
@@ -89,7 +90,7 @@ $rows  = $statement->fetchAll();
 if(count($rows) > 0) {
   $content = '';
   foreach ($rows as $trick) {
-    $trick_name = trick_name($trick['stance'], $trick['direction'], $trick['name']);
+    $trick_name = trick_name($trick['stance'], $trick['direction'], $trick['tag_name'], $trick['name']);
     $content .= li(checkbox_array('trick_ids', $trick['trick_id']) .
                   ' -- ' .
                   $trick_name);
