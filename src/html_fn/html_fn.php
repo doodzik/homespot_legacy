@@ -83,6 +83,12 @@
     return "<input type=\"checkbox\" name=\"$name\" $checked/>";
   }
 
+  function checkbox_array ($name, $value, $checked = false) {
+    $checked = ($checked) ? 'checked' : '';
+    $name .= '[]';
+    return "<input type=\"checkbox\" name=\"$name\" value=\"$value\" $checked/>";
+  }
+
   function text ($name ='', $placeholder = '') {
     return input('text', $name, $placeholder);
   }
@@ -92,7 +98,7 @@
   }
 
   function submit ($value = 'Submit') {
-    return "<input type=\"submit\" value=\"$value\">";
+    return "<input type=\"submit\" name=\"submit\" value=\"$value\">";
   }
 
   // TODO rename nav

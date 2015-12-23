@@ -10,8 +10,8 @@ $statement = $db->prepare('SELECT *
                               ORDER BY `name` ASC');
 $statement->bindValue(":user_id", $_SESSION['user_id']);
 $count = $statement->execute();
-if($count) {
-  $rows = $statement->fetchAll();
+$rows = $statement->fetchAll();
+if(count($rows) > 0) {
   $content = '';
   foreach ($rows as $tag) {
     $tag_name = $tag['name'];

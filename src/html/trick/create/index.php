@@ -2,22 +2,23 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-redirect_not_authed(); 
+redirect_not_authed();
 
 $error = array();
 
 if(isset($_POST['name'])) {
   $prefixes = array();
-  foreach ($_POST['stance'] as $key => $value) {
-    if($key != 'normal' && $key != 'nolli' && $key != 'switch' && $key != 'fakie')
+  foreach ($_POST['stance'] as $stance => $value) {
+    if($stance != 'normal' && $stance != 'nolli' && $stance != 'switch' && $stance != 'fakie')
       continue;
-    $value = ($key == 'normal') ? '' : $key . ' ';
-    if(isset($_POST['direction']['none']))
-      array_push($prefixes, trim($value));
-    if(isset($_POST['direction']['fs']))
-      array_push($prefixes, $value . 'fs');
-    if(isset($_POST['direction']['bs']))
-      array_push($prefixes, $value . 'bs');
+    foreach ($_POST['direction'] as $direction => $value2) {
+      if($direction != 'none' && $direction != 'fs' && $direction != 'bs')
+        continue;
+      array_push($prefixes, array(
+        'stance'    => $stance,
+        'direction' => $direction
+      ));
+    }
   }
 
   $name = $_POST['name'];
@@ -25,17 +26,24 @@ if(isset($_POST['name'])) {
   if(strlen($name_err) > 0)
     $error['name'] = $name_err;
   if(count($error) == 0) {
-    $query = 'INSERT INTO TRICK (prefix, name, reset, user_id) VALUES ';
-    $insertData = array();
-    $qPart = array_fill(0, count($prefixes), "(?, ?, ?, ?)");
+    $query_trick_name = 'INSERT INTO TRICK_NAME (name, user_id) VALUES (:name, :user_id)';
+    $stmt_trick_name = $db -> prepare($query_trick_name);
+    $stmt_trick_name->bindValue(':name', $name);
+    $stmt_trick_name->bindValue(':user_id', $_SESSION['user_id']);
+    $stmt_trick_name -> execute();
+    $trick_name_id = $db->lastInsertId();
+
+    $query  = 'INSERT INTO TRICK (stance, direction, user_id, trick_name_id, reset) VALUES ';
+    $qPart  = array_fill(0, count($prefixes), "(?, ?, ?, ?, ?)");
     $query .=  implode(",",$qPart);
-    $stmt = $db -> prepare($query);
-    $i = 1;
+    $stmt   = $db -> prepare($query);
+    $i      = 1;
     foreach($prefixes as $prefix) { //bind the values one by one
-        $stmt->bindValue($i++, $prefix);
-        $stmt->bindValue($i++, $name);
-        $stmt->bindValue($i++, date('Y-m-d H:i:s', time()));
+        $stmt->bindValue($i++, $prefix['stance']);
+        $stmt->bindValue($i++, $prefix['direction']);
         $stmt->bindValue($i++, $_SESSION['user_id']);
+        $stmt->bindValue($i++, $trick_name_id);
+        $stmt->bindValue($i++, date('Y-m-d', time()));
     }
     $stmt -> execute();
 
@@ -60,6 +68,7 @@ echo html(title('Homespot - Create Trick'),
                   lable('bs:')   . checkbox('direction[bs]', false)) .
               input_err($error, 'name') .
               input('text', 'name') .
+              div(lable('tags:')) .
               submit()
             )));
 ?>

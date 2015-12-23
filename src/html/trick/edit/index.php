@@ -13,11 +13,13 @@ if(empty($_GET['name']) && empty($_POST['name'])) {
 
 
 if(isset($_POST['name'])) {
-  $sql = "UPDATE TRICK SET name = :name
-            WHERE name = :old_name";
+  $sql = "UPDATE TRICK_NAME SET name = :name
+            WHERE name = :old_name 
+              AND user_id = :user_id";
   $stmt = $db->prepare($sql);
   $stmt->bindParam(':name', $_POST['name'], PDO::PARAM_STR);
   $stmt->bindParam(':old_name', $_POST['old_name'], PDO::PARAM_STR);
+  $stmt->bindParam(':user_id', $_SESSION['user_id']);
   $stmt->execute();
 
   header('Location: /tricks');

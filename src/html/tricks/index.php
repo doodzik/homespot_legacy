@@ -4,15 +4,14 @@ require "$root/init.php";
 
 redirect_not_authed();
 
-$statement = $db->prepare('SELECT *
-                              FROM `TRICK`
+$statement = $db->prepare('SELECT name 
+                              FROM `TRICK_NAME`
                               WHERE `user_id` = :user_id
-                              GROUP BY `name`
                               ORDER BY `name` ASC');
 $statement->bindValue(":user_id", $_SESSION['user_id']);
 $count = $statement->execute();
-if($count) {
-  $rows = $statement->fetchAll();
+$rows = $statement->fetchAll();
+if(count($rows) > 0) {
   $content = '';
   foreach ($rows as $trick) {
     $trick_name = $trick['name'];
