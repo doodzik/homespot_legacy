@@ -78,6 +78,10 @@
     return $input;
   }
 
+  function br () {
+    return '</br>';
+  }
+
   function checkbox ($name, $checked = true) {
     $checked = ($checked) ? 'checked' : '';
     return "<input type=\"checkbox\" name=\"$name\" $checked/>";
