@@ -6,7 +6,7 @@ redirect_not_authed();
 
 $error = array();
 
-if(isset($_POST['no_tags'])) {
+if(isset($_POST['no_tags']))
   $error['no_tags'] = 'you need tags to use this service';
 
 if(isset($_POST['name'])) {
