@@ -9,7 +9,7 @@ function trick_name($stance, $direction, $tag, $name) {
     $direction = '';
   if($stance == 'normal')
     $stance = '';
-  return trim($stance . ' ' . $direction . ' ' . $name . ': ' . $tag);
+  return trim($stance . ' ' . $direction . ' ' . a($name, "/trick/edit/index.php?name=$name") . ': ' . $tag);
 }
 
 
@@ -57,7 +57,7 @@ if(isset($_POST['submit']) && $_POST['submit'] == 'bad') {
     foreach ($trick_ids as $trick_id) {
         $stmt->bindValue(':trick_id', $trick_id);
         $stmt->bindValue(':user_id', $_SESSION['user_id']);
-        $stmt->bindValue(':reset', date('Y-m-d', time()));
+        $stmt->bindValue(':reset', date('Y-m-d', strtotime('+1days')));
         $stmt->bindValue(':interval', 1);
         $query->execute();
     }
@@ -120,7 +120,7 @@ if(count($rows) > 0) {
   foreach ($rows as $trick) {
     $trick_name = trick_name($trick['stance'], $trick['direction'], $trick['tag_name'], $trick['name']);
     $content .= li(checkbox_array('trick_ids', $trick['trick_id']) .
-                  ' -- ' .
+                  ' --- ' .
                   $trick_name);
   }
 } else {
