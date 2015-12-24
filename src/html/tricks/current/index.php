@@ -68,25 +68,53 @@ if(isset($_POST['submit']) && $_POST['submit'] == 'bad') {
   }
 }
 
-if(isset($_GET['tag_names'])) {
-  $filters  = join(', ', $_GET['tag_names']);
-} else {
-  $filters  = 'all';
+if(empty($_GET['tag_names'])) {
+  $query = 'SELECT name
+              FROM TAG
+              WHERE user_id = :user_id';
+  $stmt = $db -> prepare($query);
+  $stmt -> bindValue(':user_id', $_SESSION['user_id']);
+  $stmt -> execute();
+  $rows  = $stmt->fetchAll();
+
+  if(count($rows) > 0) {
+    $_rows = array();
+    foreach($rows as $tag)
+      array_push($_rows, $tag['name']);
+    $uri_query = http_build_query(array('tag_names' => $_rows));
+    header("Location: /index.php?$uri_query");
+    exit();
+  } else {
+    header('Location: /tag/create/index.php?no_tags=1');
+    exit();
+  }
 }
 
-$statement = $db->prepare('SELECT tn.name, t.stance, t.direction, t.trick_id, TAG.name as tag_name
-                             FROM TRICK as t
-                             LEFT JOIN TRICK_NAME as tn ON tn.trick_name_id = t.trick_name_id
-                             LEFT JOIN TAG ON t.tag_id = TAG.tag_id
-                             WHERE t.user_id = :user_id
-                               AND `reset` <= :now
-                             ORDER BY `name` ASC');
-$statement->bindValue(":user_id", $_SESSION['user_id']);
-$statement->bindValue(":now", date('Y-m-d', time()));
+$tag_names = $_GET['tag_names'];
+$filters   = join(', ', $tag_names);
 
-$count = $statement->execute();
-$rows  = $statement->fetchAll();
+function current_tricks($db, $user_id, $tag_names = array()) {
+  $in  = str_repeat('?,', count($tag_names) - 1) . '?';
+  $statement = $db->prepare("SELECT tn.name, t.stance, t.direction, t.trick_id, TAG.name as tag_name
+                               FROM TRICK as t
+                               LEFT JOIN TRICK_NAME as tn ON tn.trick_name_id = t.trick_name_id
+                               LEFT JOIN TAG ON t.tag_id = TAG.tag_id
+                               WHERE t.user_id = ?
+                                 AND `reset` <= ?
+                                 AND TAG.name IN ($in)
+                               ORDER BY `name` ASC");
+  $statement->bindValue(1, $_SESSION['user_id']);
+  $statement->bindValue(2, date('Y-m-d', time()));
 
+  foreach ($tag_names as $k => $tag_name)
+    $statement->bindValue(($k+3), $tag_name);
+
+  $count = $statement->execute();
+  $rows  = $statement->fetchAll();
+  return $rows;
+}
+
+$rows = current_tricks($db, $_SESSION['user_id'], $tag_names);
 if(count($rows) > 0) {
   $content = '';
   foreach ($rows as $trick) {

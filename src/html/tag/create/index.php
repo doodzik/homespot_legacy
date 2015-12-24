@@ -6,6 +6,9 @@ redirect_not_authed();
 
 $error = array();
 
+if(isset($_POST['no_tags'])) {
+  $error['no_tags'] = 'you need tags to use this service';
+
 if(isset($_POST['name'])) {
   $prefixes = array();
   if(count($error) == 0) {
@@ -24,6 +27,7 @@ echo html(title('Homespot - Create Tag'),
           nav() .
           content(
             h1("Create Tag") .
+            input_err($error, 'no_tags') .
             form('post',
               input_err($error, 'name') .
               input('text', 'name') .
