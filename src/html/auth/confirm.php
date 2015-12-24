@@ -7,8 +7,10 @@ if(isset($_GET['token'])) {
   $stmt  =  $db->prepare("SELECT user_id
                             FROM USER
                             WHERE token=:token
+                              AND token_time < :token_time
                             LIMIT 1");
   $stmt->bindValue(":token", $token);
+  $stmt->bindValue(':token_time', date('Y-m-d H:i:s', strtotime('+1 hour')));
   $stmt->execute();
   $row = $stmt->fetch();
   if(isset($row))

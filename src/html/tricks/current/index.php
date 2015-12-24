@@ -37,7 +37,7 @@ if(isset($_POST['submit']) && $_POST['submit'] == 'good') {
 
       $query->bindValue(':trick_id', $trick_id);
       $query->bindValue(':user_id', $_SESSION['user_id']);
-      $query->bindValue(':reset', date('Y-m-d', strtotime('+' . $row['interval'] . 'days')));
+      $query->bindValue(':reset', date('Y-m-d', strtotime('+' . $row['interval'] . ' days')));
       $query->bindValue(':interval', $row['interval'] * 2);
       $query->execute();
     }
@@ -57,7 +57,7 @@ if(isset($_POST['submit']) && $_POST['submit'] == 'bad') {
     foreach ($trick_ids as $trick_id) {
         $stmt->bindValue(':trick_id', $trick_id);
         $stmt->bindValue(':user_id', $_SESSION['user_id']);
-        $stmt->bindValue(':reset', date('Y-m-d', strtotime('+1days')));
+        $stmt->bindValue(':reset', date('Y-m-d', strtotime('+1 days')));
         $stmt->bindValue(':interval', 1);
         $query->execute();
     }

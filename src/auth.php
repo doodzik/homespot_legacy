@@ -22,7 +22,8 @@ function gen_uuid() {
 }
 
 function send_login_mail ($to, $token) {
-  $message = "In order to login into Homespot you need to click on this link: http://homespot.dudzik.co/auth/confirm.php?token=$token";
+  $message = "In order to login into Homespot you need to click on this link: http://homespot.dudzik.co/auth/confirm.php?token=$token
+ you have to login within an hour!";
   $subject = 'Loging in';
   $headers = 'From: noreply@dudzik.co' . "\r\n" .
     'Reply-To: webmaster@dudzik.co' . "\r\n" .
@@ -32,7 +33,7 @@ function send_login_mail ($to, $token) {
 }
 
 function create_user($db, $uuid, $email) {
-  $statement = $db->prepare('INSERT INTO USER (token, token_time, email) 
+  $statement = $db->prepare('INSERT INTO USER (token, token_time, email)
                               VALUES (:token, :token_time, :email)');
   $statement->bindValue(":token", $uuid);
   $statement->bindValue(":token_time", date('Y-m-d H:i:s', time()));
@@ -41,7 +42,7 @@ function create_user($db, $uuid, $email) {
 
   $user_id = $db->lastInsertId();
 
-  $statement = $db->prepare("INSERT INTO TAG (user_id, name) 
+  $statement = $db->prepare("INSERT INTO TAG (user_id, name)
                               VALUES (:user_id, 'curb'),
                                      (:user_id, 'flat'),
                                      (:user_id, 'manual table'),
