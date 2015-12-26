@@ -21,7 +21,7 @@ class User {
     if($this->is_authed()) {
       return $this->id;
     } else {
-      header('Location: /auth/create/index.php');
+      header('Location: /auth/create');
       exit();
     }
   }

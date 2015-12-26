@@ -2,7 +2,7 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-redirect_not_authed();
+$tag   = new Tag($db, $user->get_id());
 
 $error = array();
 
@@ -12,14 +12,7 @@ if(isset($_POST['tag_names'])) {
   exit();
 }
 
-$query = 'SELECT name, tag_id
-            FROM TAG
-            WHERE user_id = :user_id';
-$stmt = $db -> prepare($query);
-$stmt -> bindValue(':user_id', $_SESSION['user_id']);
-$stmt -> execute();
-$rows  = $stmt->fetchAll();
-
+$rows = $tag->all();
 $content = '';
 
 if(count($rows) > 0) {

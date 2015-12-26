@@ -2,9 +2,9 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-$tag   = new Tag($db);
+$tag   = new Tag($db, $user->get_id());
 
-$rows = $tag->all($user->get_id());
+$rows = $tag->all();
 $content = '';
 if(count($rows) > 0) {
   foreach ($rows as $_tag)

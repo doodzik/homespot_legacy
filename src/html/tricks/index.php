@@ -2,8 +2,8 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-$trick  = new Trick($db);
-$tricks = $trick->names($user->get_id());
+$trick  = new Trick($db, $user->get_id());
+$tricks = $trick->names();
 
 if(count($tricks) > 0) {
   $content = '';

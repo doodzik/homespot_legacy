@@ -2,14 +2,14 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-$trick = new Trick($db);
-$tag   = new Tag($db);
+$trick = new Trick($db, $user->get_id());
+$tag   = new Tag($db, $user->get_id());
 
 $err = '';
 
 if(isset($_POST['submit']) && $_POST['submit'] == 'good') {
   if(isset($_POST['trick_ids'])) {
-    $trick->defer($user->get_id(), $_POST['trick_ids']);
+    $trick->defer($_POST['trick_ids']);
     header('Location: /');
     exit();
   } else {
@@ -19,7 +19,7 @@ if(isset($_POST['submit']) && $_POST['submit'] == 'good') {
 
 if(isset($_POST['submit']) && $_POST['submit'] == 'bad') {
   if(isset($_POST['track_ids'])) {
-    $trick->reset($user->get_id(), $_POST['trick_ids']);
+    $trick->reset($_POST['trick_ids']);
     header('Location: /');
     exit();
   } else {
@@ -28,7 +28,7 @@ if(isset($_POST['submit']) && $_POST['submit'] == 'bad') {
 }
 
 if(empty($_GET['tag_names'])) {
-  $rows = $tag->all_names($user->get_id());
+  $rows = $tag->all_names();
   if(count($rows) > 0) {
     $uri_query = http_build_query(array('tag_names' => $rows));
     header("Location: /index.php?$uri_query");
@@ -42,7 +42,7 @@ if(empty($_GET['tag_names'])) {
 $tag_names = $_GET['tag_names'];
 $filters   = join(', ', $tag_names);
 
-$tricks  = $trick->current($user->get_id(), $tag_names);
+$tricks  = $trick->current($tag_names);
 
 $content = '';
 if(count($tricks) == 0) {

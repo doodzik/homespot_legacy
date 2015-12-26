@@ -1,8 +1,8 @@
 <?php
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
-
-$tag   = new Tag($db);
+ 
+$tag   = new Tag($db, $user->get_id());
 
 $error = array();
 
@@ -12,7 +12,7 @@ if(empty($_GET['name']) && empty($_POST['name'])) {
 }
 
 if(isset($_POST['name'])) {
-  $tag->delete($user->get_id(), $_POST['name']);
+  $tag->delete($_POST['name']);
   header('Location: /tags');
   exit();
 }

@@ -4,14 +4,14 @@ require "$root/init.php";
 
 $error = array();
 
-$tag   = new Tag($db);
+$tag   = new Tag($db, $user->get_id());
 
 if(isset($_GET['no_tags']))
   $error['no_tags'] = 'you need tags to use this service';
 
 if(isset($_POST['name'])) {
   if(count($error) == 0) {
-    $tag->create($user->get_id(), $_POST['name']);
+    $tag->create($_POST['name']);
     header('Location: /tags');
     exit();
   }

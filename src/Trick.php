@@ -3,11 +3,13 @@ include 'TrickRow.php';
 include 'trick_fn.php';
 
 class Trick {
-  public function __construct($db) {
-    $this->db = $db;
+  public function __construct($db, $user_id) {
+    $this->db      = $db;
+    $this->user_id = $user_id;
   }
 
-  public function current($user_id, $tag_names = array()) {
+  public function current($tag_names = array()) {
+    $user_id = $this->user_id;
     $in  = str_repeat('?,', count($tag_names) - 1) . '?';
     $db  = $this->db;
     $statement = $db->prepare("SELECT tn.name, t.stance, t.direction, t.trick_id, TAG.tag_id, TAG.name as tag_name
@@ -37,7 +39,8 @@ class Trick {
     return $trick_rows;
   }
 
-  public function defer($user_id, $trick_ids) {
+  public function defer($trick_ids) {
+    $user_id = $this->user_id;
     $db = $this->db;
     $query = $db->prepare('UPDATE TRICK
                             SET reset = :reset, interval = :interval
@@ -65,7 +68,8 @@ class Trick {
     }
   }
 
-  public function reset($user_id, $trick_ids) {
+  public function reset($trick_ids) {
+    $user_id = $this->user_id;
     $db = $this->db;
     $query = $db->prepare('UPDATE TRICK
                             SET reset = :reset, interval = :interval
@@ -80,7 +84,8 @@ class Trick {
     }
   }
 
-  public function by_name($user_id, $name) {
+  public function by_name($name) {
+    $user_id = $this->user_id;
     $statement = $this->db->prepare("SELECT stance, direction, tag_id, tn.trick_name_id
                                  FROM TRICK as t
                                  LEFT JOIN TRICK_NAME as tn ON tn.trick_name_id = t.trick_name_id
@@ -94,7 +99,8 @@ class Trick {
     return $tricks;
   }
 
-  public function delete_by_name($user_id, $name) {
+  public function delete_by_name($name) {
+    $user_id = $this->user_id;
     $db = $this->db;
     $sql = "SELECT trick_name_id
               FROM TRICK_NAME
@@ -124,7 +130,8 @@ class Trick {
     }
   }
 
-  public function names($user_id) {
+  public function names() {
+    $user_id = $this->user_id;
     $statement = $this->db->prepare('SELECT name
                                   FROM `TRICK_NAME`
                                   WHERE `user_id` = :user_id
@@ -135,17 +142,19 @@ class Trick {
     return $this->gen_trick_rows($rows);
   }
 
-  public function create_trick_name($user_id, $name) {
-      $db = $this->db;
-      $query_trick_name = 'INSERT INTO TRICK_NAME (name, user_id) VALUES (:name, :user_id)';
-      $stmt_trick_name = $db -> prepare($query_trick_name);
-      $stmt_trick_name->bindValue(':name', $name);
-      $stmt_trick_name->bindValue(':user_id', $_SESSION['user_id']);
-      $stmt_trick_name -> execute();
-      return $db->lastInsertId();
+  public function create_trick_name($name) {
+    $user_id = $this->user_id;
+    $db = $this->db;
+    $query_trick_name = 'INSERT INTO TRICK_NAME (name, user_id) VALUES (:name, :user_id)';
+    $stmt_trick_name = $db -> prepare($query_trick_name);
+    $stmt_trick_name->bindValue(':name', $name);
+    $stmt_trick_name->bindValue(':user_id', $_SESSION['user_id']);
+    $stmt_trick_name -> execute();
+    return $db->lastInsertId();
   }
 
-  public function create($user_id, $trick_name_id, $create_tricks) {
+  public function create($trick_name_id, $create_tricks) {
+    $user_id = $this->user_id;
     $query  = 'INSERT INTO TRICK (stance, direction, user_id, trick_name_id, reset, tag_id) VALUES ';
     $qPart  = array_fill(0, count($create_tricks), "(?, ?, ?, ?, ?, ?)");
     $query .=  implode(",",$qPart);
@@ -162,7 +171,8 @@ class Trick {
     $stmt -> execute();
   }
 
-  public function delete ($user_id, $trick_name_id, $delete_tricks) {
+  public function delete ($trick_name_id, $delete_tricks) {
+    $user_id = $this->user_id;
     $stmt   = $this -> db -> prepare('DELETE
                                 FROM TRICK
                                 WHERE user_id = :user_id
@@ -180,7 +190,8 @@ class Trick {
     }
   }
 
-  public function update_name($user_id, $old_name, $name) {
+  public function update_name($old_name, $name) {
+    $user_id = $this->user_id;
     $sql = "UPDATE TRICK_NAME SET name = :name
               WHERE name = :old_name
                 AND user_id = :user_id";

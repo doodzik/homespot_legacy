@@ -2,7 +2,7 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-$tag   = new Tag($db);
+$tag   = new Tag($db, $user->get_id());
 
 $error = array();
 
@@ -12,7 +12,7 @@ if(empty($_GET['name']) && empty($_POST['name'])) {
 }
 
 if(isset($_POST['name'])) {
-  $tag->update($user->get_id(), $_POST['name'], $_POST['old_name']);
+  $tag->update($_POST['name'], $_POST['old_name']);
   header('Location: /tags');
   exit();
 }

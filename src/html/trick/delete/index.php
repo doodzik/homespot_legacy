@@ -2,14 +2,12 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-redirect_not_authed();
-
-$error = array();
-
 if(empty($_GET['name']) && empty($_POST['name'])) {
   header('Location: /');
   exit();
 }
+
+$trick  = new Trick($db, $user->get_id());
 
 if(isset($_POST['name'])) {
   $tricks = $trick->delete_by_name($user->get_id(), $_POST['name']);

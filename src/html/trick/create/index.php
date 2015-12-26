@@ -2,8 +2,8 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-$tag   = new Tag($db);
-$trick = new Trick($db);
+$tag   = new Tag($db, $user->get_id());
+$trick = new Trick($db, $user->get_id());
 
 $error = array();
 
@@ -19,15 +19,15 @@ if(isset($_POST['name'])) {
 
     $name = $_POST['name'];
     if(count($error) == 0) {
-      $trick_name_id = $trick->create_trick_name($user->get_id(), $name);
-      $trick->create($user->get_id(), $trick_name_id, $prefixes);
+      $trick_name_id = $trick->create_trick_name($name);
+      $trick->create($trick_name_id, $prefixes);
       header('Location: /');
       exit();
     }
   }
 }
 
-$rows  = $tag->all($user->get_id());
+$rows  = $tag->all();
 $tags = '';
 
 if(count($rows) > 0) {

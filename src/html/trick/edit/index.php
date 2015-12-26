@@ -2,8 +2,6 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-redirect_not_authed();
-
 $error = array();
 
 if(empty($_GET['name']) && empty($_POST['name'])) {
@@ -13,17 +11,17 @@ if(empty($_GET['name']) && empty($_POST['name'])) {
 
 $name = (isset($_GET['name'])) ? $_GET['name'] : $_POST['name'];
 
-$trick = new Trick($db);
-$tag   = new Tag($db);
+$trick = new Trick($db, $user->get_id());
+$tag   = new Tag($db, $user->get_id());
 
-$tricks = $trick->by_name($user->get_id(), $name);
+$tricks = $trick->by_name($name);
 
 $tricks_old     = array_select_prefix($tricks);
 $tags_old       = array_select_key($tricks, 'tag_id');
 $stances_old    = array_select_key($tricks, 'stance');
 $directions_old = array_select_key($tricks, 'direction');
 
-$tags_all  = $tag->all($user->get_id());
+$tags_all  = $tag->all();
 
 $tags_echo = '';
 if(count($tags_all) > 0) {
@@ -49,9 +47,9 @@ if(isset($_POST['name'])) {
     $delete_tricks = compare_prefixes($tricks_old, $prefixes);
     $create_tricks = compare_prefixes($prefixes, $tricks_old);
 
-    $trick->create($user->get_id(), $trick_name_id, $create_tricks);
-    $trick->delete($user->get_id(), $trick_name_id, $delete_tricks);
-    $trick->update_name($user->get_id(), $_POST['old_name'], $_POST['name']);
+    $trick->create($trick_name_id, $create_tricks);
+    $trick->delete($trick_name_id, $delete_tricks);
+    $trick->update_name($_POST['old_name'], $_POST['name']);
 
     header('Location: /tricks');
     exit();
