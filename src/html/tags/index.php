@@ -2,21 +2,13 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-redirect_not_authed();
+$tag   = new Tag($db);
 
-$statement = $db->prepare('SELECT *
-                              FROM `TAG`
-                              WHERE `user_id` = :user_id
-                              ORDER BY `name` ASC');
-$statement->bindValue(":user_id", $_SESSION['user_id']);
-$count = $statement->execute();
-$rows = $statement->fetchAll();
+$rows = $tag->all($user->get_id());
+$content = '';
 if(count($rows) > 0) {
-  $content = '';
-  foreach ($rows as $tag) {
-    $tag_name = $tag['name'];
-    $content .= li(a($tag_name, "/tag/edit/index.php?name=$tag_name"));
-  }
+  foreach ($rows as $_tag)
+    $content .= li(a($_tag['name'], "/tag/edit/index.php?name=" . $_tag['name']));
 } else {
   $content = 'you have no tags';
 }

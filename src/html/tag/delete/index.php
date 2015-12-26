@@ -2,7 +2,7 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-redirect_not_authed();
+$tag   = new Tag($db);
 
 $error = array();
 
@@ -12,10 +12,7 @@ if(empty($_GET['name']) && empty($_POST['name'])) {
 }
 
 if(isset($_POST['name'])) {
-  $sql = "DELETE FROM TAG WHERE name = :name";
-  $stmt = $db->prepare($sql);
-  $stmt->bindParam(':name', $_POST['name']);   
-  $stmt->execute();
+  $tag->delete($user->get_id(), $_POST['name']);
   header('Location: /tags');
   exit();
 }

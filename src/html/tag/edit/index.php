@@ -2,7 +2,7 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-redirect_not_authed();
+$tag   = new Tag($db);
 
 $error = array();
 
@@ -11,15 +11,8 @@ if(empty($_GET['name']) && empty($_POST['name'])) {
   exit();
 }
 
-
 if(isset($_POST['name'])) {
-  $sql = "UPDATE TAG SET name = :name
-            WHERE name = :old_name";
-  $stmt = $db->prepare($sql);                                  
-  $stmt->bindParam(':name', $_POST['name'], PDO::PARAM_STR);       
-  $stmt->bindParam(':old_name', $_POST['old_name'], PDO::PARAM_STR);    
-  $stmt->execute(); 
-
+  $tag->update($user->get_id(), $_POST['name'], $_POST['old_name']);
   header('Location: /tags');
   exit();
 }

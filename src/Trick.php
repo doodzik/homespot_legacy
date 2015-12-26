@@ -94,8 +94,38 @@ class Trick {
     return $tricks;
   }
 
+  public function delete_by_name($user_id, $name) {
+    $db = $this->db;
+    $sql = "SELECT trick_name_id
+              FROM TRICK_NAME
+              WHERE name = :name
+                AND user_id = :user_id
+              LIMIT 1";
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(':name', $name);
+    $stmt->bindParam(':user_id', $user_id);
+    $stmt->execute();
+    $row = $stmt->fetch();
+
+    if(isset($row)) {
+      $sql = "DELETE
+                FROM TRICK_NAME
+                WHERE trick_name_id = :trick_name_id";
+      $stmt = $db->prepare($sql);
+      $stmt->bindParam(':trick_name_id', $row['trick_name_id']);
+      $stmt->execute();
+
+      $sql = "DELETE
+                FROM TRICK
+                WHERE trick_name_id = :trick_name_id";
+      $stmt = $db->prepare($sql);
+      $stmt->bindParam(':trick_name_id', $row['trick_name_id']);
+      $stmt->execute();
+    }
+  }
+
   public function names($user_id) {
-    $statement = $this->db->prepare('SELECT name 
+    $statement = $this->db->prepare('SELECT name
                                   FROM `TRICK_NAME`
                                   WHERE `user_id` = :user_id
                                   ORDER BY `name` ASC');
@@ -103,6 +133,16 @@ class Trick {
     $count = $statement->execute();
     $rows = $statement->fetchAll();
     return $this->gen_trick_rows($rows);
+  }
+
+  public function create_trick_name($user_id, $name) {
+      $db = $this->db;
+      $query_trick_name = 'INSERT INTO TRICK_NAME (name, user_id) VALUES (:name, :user_id)';
+      $stmt_trick_name = $db -> prepare($query_trick_name);
+      $stmt_trick_name->bindValue(':name', $name);
+      $stmt_trick_name->bindValue(':user_id', $_SESSION['user_id']);
+      $stmt_trick_name -> execute();
+      return $db->lastInsertId();
   }
 
   public function create($user_id, $trick_name_id, $create_tricks) {

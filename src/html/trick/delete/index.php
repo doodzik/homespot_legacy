@@ -12,32 +12,7 @@ if(empty($_GET['name']) && empty($_POST['name'])) {
 }
 
 if(isset($_POST['name'])) {
-  $sql = "SELECT trick_name_id
-            FROM TRICK_NAME
-            WHERE name = :name
-              AND user_id = :user_id
-            LIMIT 1";
-  $stmt = $db->prepare($sql);
-  $stmt->bindParam(':name', $_POST['name']);
-  $stmt->bindParam(':user_id', $_SESSION['user_id']);
-  $stmt->execute();
-  $row = $stmt->fetch();
-
-  if(isset($row)) {
-    $sql = "DELETE
-              FROM TRICK_NAME
-              WHERE trick_name_id = :trick_name_id";
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':trick_name_id', $row['trick_name_id']);
-    $stmt->execute();
-
-    $sql = "DELETE
-              FROM TRICK
-              WHERE trick_name_id = :trick_name_id";
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':trick_name_id', $row['trick_name_id']);
-    $stmt->execute();
-  }
+  $tricks = $trick->delete_by_name($user->get_id(), $_POST['name']);
   header('Location: /tricks');
   exit();
 }

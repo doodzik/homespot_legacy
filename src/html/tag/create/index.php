@@ -2,22 +2,16 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-redirect_not_authed();
-
 $error = array();
+
+$tag   = new Tag($db);
 
 if(isset($_GET['no_tags']))
   $error['no_tags'] = 'you need tags to use this service';
 
 if(isset($_POST['name'])) {
-  $prefixes = array();
   if(count($error) == 0) {
-    $query = 'INSERT INTO TAG (name, user_id) VALUES (:name, :user_id)';
-    $stmt = $db -> prepare($query);
-    $stmt->bindValue(':name', $_POST['name']);
-    $stmt->bindValue(':user_id', $_SESSION['user_id']);
-    $stmt -> execute();
-
+    $tag->create($user->get_id(), $_POST['name']);
     header('Location: /tags');
     exit();
   }
