@@ -14,7 +14,7 @@ if(count($rows) > 0) {
 }
 
 echo html(title('Homespot - All Tags'),
-          nav() .
+          navigation() .
           content(
             h1("All Tags") .
             ul($content)));

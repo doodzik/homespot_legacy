@@ -14,11 +14,13 @@ if(isset($_POST['tag_names'])) {
 
 $rows = $tag->all();
 $content = '';
+$tag_names = (isset($_GET['tag_names'])) ? $_GET['tag_names'] : array();
+$tag_names = array_flip($tag_names);
 
 if(count($rows) > 0) {
     foreach ($rows as $tag) {
       $tag_name = $tag['name'];
-      $content .= li(checkbox_array('tag_names', $tag_name) .
+      $content .= li(checkbox_array('tag_names', $tag_name, isset($tag_names[$tag_name])) .
                      ' -- ' .
                      a($tag_name, "/tag/edit/index.php?name=$tag_name"));
     }
@@ -29,7 +31,7 @@ if(count($rows) > 0) {
 }
 
 echo html(title('Homespot - Filter Current'),
-          nav() .
+          navigation() .
           content(
             h1("Filter Current by Tag") .
             $content));

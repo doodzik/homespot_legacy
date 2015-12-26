@@ -28,4 +28,11 @@ class TrickRow {
                   $this->get_full_name());
   }
 }
+
+function gen_trick_rows($rows) {
+  $trick_rows = array();
+  foreach ($rows as $row)
+    array_push($trick_rows, new TrickRow($row));
+  return $trick_rows;
+}
 ?>

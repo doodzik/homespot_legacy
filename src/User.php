@@ -28,7 +28,7 @@ class User {
 
   public function auth($token) {
     $row = $this->by_token($token);
-    if(isset($row)) { 
+    if(isset($row)) {
       $_SESSION['user_id'] = $row['user_id'];
       return true;
     }
@@ -70,5 +70,5 @@ class User {
     return $row;
   }
 }
-  
+
 ?>

@@ -41,8 +41,9 @@ if(empty($_GET['tag_names'])) {
 
 $tag_names = $_GET['tag_names'];
 $filters   = join(', ', $tag_names);
+$tags_query = http_build_query(array('tag_names' => $tag_names));
 
-$tricks  = $trick->current($tag_names);
+$tricks  = gen_trick_rows($trick->current($tag_names));
 
 $content = '';
 if(count($tricks) == 0) {
@@ -53,11 +54,11 @@ if(count($tricks) == 0) {
 }
 
 echo html(title('Homespot'),
-          nav() .
+          navigation() .
           content(
             h1("Current Tricks") .
             $err .
-            a('change filters', '/tricks/current/filter') .
+            a('change filters', '/tricks/current/filter/index.php?' . $tags_query) .
             br() .
             p("current filters: $filters") .
             form('post',

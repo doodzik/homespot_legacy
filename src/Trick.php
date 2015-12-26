@@ -29,14 +29,7 @@ class Trick {
 
     $count = $statement->execute();
     $rows  = $statement->fetchAll();
-    return $this->gen_trick_rows($rows);
-  }
-
-  private function gen_trick_rows($rows) {
-    $trick_rows = array();
-    foreach ($rows as $row)
-      array_push($trick_rows, new TrickRow($row));
-    return $trick_rows;
+    return $rows;
   }
 
   public function defer($trick_ids) {
@@ -139,7 +132,7 @@ class Trick {
     $statement->bindValue(":user_id", $user_id);
     $count = $statement->execute();
     $rows = $statement->fetchAll();
-    return $this->gen_trick_rows($rows);
+    return $rows;
   }
 
   public function create_trick_name($name) {

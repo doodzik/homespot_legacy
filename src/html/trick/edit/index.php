@@ -9,7 +9,7 @@ if(empty($_GET['name']) && empty($_POST['name'])) {
   exit();
 }
 
-$name = (isset($_GET['name'])) ? $_GET['name'] : $_POST['name'];
+$name  = (isset($_GET['name'])) ? $_GET['name'] : $_POST['name'];
 
 $trick = new Trick($db, $user->get_id());
 $tag   = new Tag($db, $user->get_id());
@@ -25,11 +25,11 @@ $tags_all  = $tag->all();
 
 $tags_echo = '';
 if(count($tags_all) > 0) {
-    foreach ($tags_all as $tag) {
-      $tags_echo .= li(checkbox_array('tag_ids', $tag['tag_id'], in_array($tag['tag_id'], $tags_old)) .
+  foreach ($tags_all as $tag) {
+    $tags_echo .= li(checkbox_array('tag_ids', $tag['tag_id'], in_array($tag['tag_id'], $tags_old)) .
                      ' --- ' .
                      a($tag['name'], "/tag/edit/index.php?name=" . $tag['name']));
-    }
+  }
 } else {
   header('Location: /tag/create/index.php?no_tags=1');
   exit();
@@ -57,7 +57,7 @@ if(isset($_POST['name'])) {
 }
 
 echo html(title('Homespot - Edit Trick'),
-          nav() .
+          navigation() .
           content(
             h1("Edit Trick") .
             input_err($error, 'name') .

@@ -20,7 +20,7 @@ if(isset($_POST['name'])) {
 $name = $_GET['name'];
 
 echo html(title('Homespot - Edit tags'),
-          nav() .
+          navigation() .
           content(
             h1("Edit Tags") .
             form('post',

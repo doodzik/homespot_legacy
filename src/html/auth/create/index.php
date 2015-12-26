@@ -29,12 +29,11 @@ if(isset($_POST['email'])) {
 }
 
 echo html(title('Homespot - Sign In/Up'),
-          nav() .
+          navigation() .
           content(
             h1("Sign In/Up") .
             form('post',
               input_err($error, 'email') .
               input('email') .
-              submit()
-            )));
+              submit())));
 ?>

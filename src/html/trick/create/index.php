@@ -43,7 +43,7 @@ if(count($rows) > 0) {
 
 
 echo html(title('Homespot - Create Trick'),
-          nav() .
+          navigation() .
           content(
             h1("Create Trick") .
             form('post',

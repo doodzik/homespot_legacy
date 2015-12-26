@@ -53,5 +53,4 @@ function array_select_key($array, $key) {
     array_push($new_array, $a[$key]);
   return array_unique($new_array);
 }
-
 ?>

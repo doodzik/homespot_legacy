@@ -3,7 +3,7 @@ $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
 echo html(title('Homespot - Delete Trick'),
-          nav() .
+          navigation() .
           content(
             h1('About') .
             p('abaut what') .

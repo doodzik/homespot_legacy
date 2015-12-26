@@ -15,6 +15,7 @@ if(!is_production()) {
 
 require('db.php');
 require('auth.php');
+require('trick_html.php');
 require('User.php');
 require('Trick.php');
 require('Tag.php');

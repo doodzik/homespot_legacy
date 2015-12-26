@@ -20,7 +20,7 @@ if(isset($_POST['name'])) {
 $name = $_GET['name'];
 
 echo html(title('Homespot - Delete Tag'),
-          nav() .
+          navigation() .
           content(
             h1("Delete Tag - " . $_GET['name']) .
             form('post',

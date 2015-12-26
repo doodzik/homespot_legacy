@@ -5,17 +5,11 @@ require "$root/init.php";
 $trick  = new Trick($db, $user->get_id());
 $tricks = $trick->names();
 
-if(count($tricks) > 0) {
-  $content = '';
-  foreach ($tricks as $trick)
-    $content .= li($trick->get_link());
-} else {
-  $content = 'you have no tricks';
-}
+$content = trick_names_ul($tricks);
 
 echo html(title('Homespot - All Tricks'),
-          nav() .
+          navigation() .
           content(
             h1("All Tricks") .
-            ul($content)));
+            $content));
 ?>

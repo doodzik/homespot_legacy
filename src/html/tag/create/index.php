@@ -18,7 +18,7 @@ if(isset($_POST['name'])) {
 }
 
 echo html(title('Homespot - Create Tag'),
-          nav() .
+          navigation() .
           content(
             h1("Create Tag") .
             input_err($error, 'no_tags') .

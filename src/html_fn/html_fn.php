@@ -105,22 +105,8 @@
     return "<input type=\"submit\" name=\"submit\" value=\"$value\">";
   }
 
-  // TODO rename nav
-  function _nav ($content) {
+  function nav ($content) {
     return "<nav>$content</nav>";
   }
 
-  function nav () {
-    if(logged_in()) {
-      $str = a('Home', '/') .
-             a('Create Trick', '/trick/create') .
-             a('All Tricks', '/tricks') .
-             a('Create Tag', '/tag/create') .
-             a('All Tags', '/tags') .
-             a('Logout', '/auth/delete');
-    } else {
-      $str = a('Sign In/Up', '/auth/create');
-    }
-    return _nav($str . a('About', '/about'));
-  }
 ?>
