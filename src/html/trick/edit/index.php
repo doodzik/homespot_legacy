@@ -13,52 +13,24 @@ if(empty($_GET['name']) && empty($_POST['name'])) {
 
 $name = (isset($_GET['name'])) ? $_GET['name'] : $_POST['name'];
 
+$trick = new Trick($db);
+$tag   = new Tag($db);
 
-$statement = $db->prepare("SELECT stance, direction, tag_id, tn.trick_name_id
-                             FROM TRICK as t
-                             LEFT JOIN TRICK_NAME as tn ON tn.trick_name_id = t.trick_name_id
-                             WHERE t.user_id = :user_id
-                               AND tn.name = :name");
-$statement->bindValue(':user_id', $_SESSION['user_id']);
-$statement->bindValue(':name', $name);
+$tricks = $trick->by_name($user->get_id(), $name);
 
-$count    = $statement->execute();
-$tricks   = $statement->fetchAll();
+$tricks_old     = array_select_prefix($tricks);
+$tags_old       = array_select_key($tricks, 'tag_id');
+$stances_old    = array_select_key($tricks, 'stance');
+$directions_old = array_select_key($tricks, 'direction');
 
-$tricks_old = array();
-$tags_old = array();
-$stances_old = array();
-$directions_old = array();
-$trick_name_id = $tricks[0]['trick_name_id'];
-foreach($tricks as $trick) {
-  array_push($tricks_old, array(
-    'stance'    => $trick['stance'],
-    'direction' => $trick['direction'],
-    'tag_id'    => $trick['tag_id']
-  ));
-  array_push($tags_old, $trick['tag_id']);
-  array_push($stances_old, $trick['stance']);
-  array_push($directions_old, $trick['direction']);
-}
-$tags_old = array_unique($tags_old);
-$stances_old = array_unique($stances_old);
-$directions_old = array_unique($directions_old);
-
-$query = 'SELECT tag_id, name
-            FROM TAG
-            WHERE user_id = :user_id';
-$stmt = $db -> prepare($query);
-$stmt -> bindValue(':user_id', $_SESSION['user_id']);
-$stmt -> execute();
-$tags_all  = $stmt->fetchAll();
+$tags_all  = $tag->all($user->get_id());
 
 $tags_echo = '';
 if(count($tags_all) > 0) {
     foreach ($tags_all as $tag) {
-      $tag_name = $tag['name'];
       $tags_echo .= li(checkbox_array('tag_ids', $tag['tag_id'], in_array($tag['tag_id'], $tags_old)) .
                      ' --- ' .
-                     a($tag_name, "/tag/edit/index.php?name=$tag_name"));
+                     a($tag['name'], "/tag/edit/index.php?name=" . $tag['name']));
     }
 } else {
   header('Location: /tag/create/index.php?no_tags=1');
@@ -72,102 +44,14 @@ if(isset($_POST['name'])) {
     $error['tag_ids'] = 'no tags were selected';
 
   if(count($error) == 0) {
-    $prefixes = array();
-    foreach ($_POST['stance'] as $stance => $value) {
-      if($stance != 'normal' && $stance != 'nolli' && $stance != 'switch' && $stance != 'fakie')
-        continue;
-      foreach ($_POST['direction'] as $direction => $value2) {
-        if($direction != 'none' && $direction != 'fs' && $direction != 'bs')
-          continue;
-        foreach ($_POST['tag_ids'] as $tag_id) {
-          array_push($prefixes, array(
-            'stance'    => $stance,
-            'direction' => $direction,
-            'tag_id'    => $tag_id
-          ));
-        }
-      }
-    }
-
-    function compare_prefixes($as, $bs) {
-      $rest = array();
-      foreach ($as as $key => $a) {
-        $i = 0;
-        $break = false;
-        foreach ($bs as $key => $b) {
-          if ($a['stance'] == $b['stance'] && $a['direction'] == $b['direction'] && $a['tag_id'] == $b['tag_id'])
-            $break = true;
-          $i++;
-          if(count($bs) == $i && !$break)
-            array_push($rest, array('stance' => $a['stance'], 'direction' => $a['direction'], 'tag_id' => $a['tag_id']));
-        }
-      }
-      return $rest;
-    }
+    $prefixes = generate_prefixes(array_keys($_POST['stance']), array_keys($_POST['direction']), $_POST['tag_ids']);
 
     $delete_tricks = compare_prefixes($tricks_old, $prefixes);
     $create_tricks = compare_prefixes($prefixes, $tricks_old);
 
-    $query  = 'INSERT INTO TRICK (stance, direction, user_id, trick_name_id, reset, tag_id) VALUES ';
-    $qPart  = array_fill(0, count($create_tricks), "(?, ?, ?, ?, ?, ?)");
-    $query .=  implode(",",$qPart);
-    $stmt   = $db -> prepare($query);
-    $i      = 1;
-    foreach($create_tricks as $create_trick) { //bind the values one by one
-        $stmt->bindValue($i++, $create_trick['stance']);
-        $stmt->bindValue($i++, $create_trick['direction']);
-        $stmt->bindValue($i++, $_SESSION['user_id']);
-        $stmt->bindValue($i++, $trick_name_id);
-        $stmt->bindValue($i++, date('Y-m-d', time()));
-        $stmt->bindValue($i++, $create_trick['tag_id']);
-    }
-    $stmt -> execute();
-
-    $stmt   = $db -> prepare('DELETE
-                                FROM TRICK
-                                WHERE user_id = :user_id
-                                  AND trick_name_id = :trick_name_id
-                                  AND stance = :stance
-                                  AND direction = :direction
-                                  AND tag_id = :tag_id');
-    foreach($delete_tricks as $delete_trick) {
-        $stmt->bindValue(':stance', $delete_trick['stance']);
-        $stmt->bindValue(':direction', $delete_trick['direction']);
-        $stmt->bindValue(':user_id', $_SESSION['user_id']);
-        $stmt->bindValue(':trick_name_id', $trick_name_id);
-        $stmt->bindValue(':tag_id', $delete_trick['tag_id']);
-        $stmt -> execute();
-    }
-
-    $statement = $db->prepare("SELECT stance, direction, tag_id
-                                 FROM TRICK as t
-                                 LEFT JOIN TRICK_NAME as tn ON tn.trick_name_id = t.trick_name_id
-                                 WHERE t.user_id = :user_id
-                                   AND tn.name = :name");
-    $statement->bindValue(':user_id', $_SESSION['user_id']);
-    $statement->bindValue(':name', $_POST['name']);
-
-    $count = $statement->execute();
-    $rows  = $statement->fetchAll();
-
-    $prefixes_old = array();
-    foreach ($rows as $row) {
-      array_push($prefixes_old, array(
-        'stance'    => $row['stance'],
-        'direction' => $row['direction'],
-        'tag_id'    => $row['tag_id']
-      ));
-    }
-
-
-    $sql = "UPDATE TRICK_NAME SET name = :name
-              WHERE name = :old_name
-                AND user_id = :user_id";
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':name', $_POST['name'], PDO::PARAM_STR);
-    $stmt->bindParam(':old_name', $_POST['old_name'], PDO::PARAM_STR);
-    $stmt->bindParam(':user_id', $_SESSION['user_id']);
-    $stmt->execute();
+    $trick->create($user->get_id(), $trick_name_id, $create_tricks);
+    $trick->delete($user->get_id(), $trick_name_id, $delete_tricks);
+    $trick->update_name($user->get_id(), $_POST['old_name'], $_POST['name']);
 
     header('Location: /tricks');
     exit();

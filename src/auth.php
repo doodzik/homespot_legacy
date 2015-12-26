@@ -84,18 +84,4 @@ function redirect_not_authed() {
     exit();
   }
 }
-
-if(logged_in()){
-    $stmt  =  $db->prepare("SELECT user_id, token, token_time
-                              FROM USER
-                              WHERE user_id=:user_id
-                              LIMIT 1");
-    $stmt->bindValue(':user_id', $_SESSION['user_id']);
-    $stmt->execute();
-    $row = $stmt->fetch();
-    if(isset($row))
-      $user = $row;
-    else
-      session_destroy();
-}
 ?>

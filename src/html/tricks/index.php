@@ -2,21 +2,13 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-redirect_not_authed();
+$trick  = new Trick($db);
+$tricks = $trick->names($user->get_id());
 
-$statement = $db->prepare('SELECT name 
-                              FROM `TRICK_NAME`
-                              WHERE `user_id` = :user_id
-                              ORDER BY `name` ASC');
-$statement->bindValue(":user_id", $_SESSION['user_id']);
-$count = $statement->execute();
-$rows = $statement->fetchAll();
-if(count($rows) > 0) {
+if(count($tricks) > 0) {
   $content = '';
-  foreach ($rows as $trick) {
-    $trick_name = $trick['name'];
-    $content .= li(a($trick_name, "/trick/edit/index.php?name=$trick_name"));
-  }
+  foreach ($tricks as $trick)
+    $content .= li($trick->get_link());
 } else {
   $content = 'you have no tricks';
 }

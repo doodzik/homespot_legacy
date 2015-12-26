@@ -4,17 +4,7 @@ require "$root/init.php";
 
 if(isset($_GET['token'])) {
   $token = $_GET['token'];
-  $stmt  =  $db->prepare("SELECT user_id
-                            FROM USER
-                            WHERE token=:token
-                              AND token_time < :token_time
-                            LIMIT 1");
-  $stmt->bindValue(":token", $token);
-  $stmt->bindValue(':token_time', date('Y-m-d H:i:s', strtotime('+1 hour')));
-  $stmt->execute();
-  $row = $stmt->fetch();
-  if(isset($row))
-    $_SESSION['user_id'] = $row['user_id'];
+  $user->auth($token);
   header('Location: /index.php');
   exit();
 }
