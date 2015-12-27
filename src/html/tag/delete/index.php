@@ -6,21 +6,18 @@ $tag   = new Tag($db, $user->get_id());
 
 $error = array();
 
-if(empty($_GET['name']) && empty($_POST['name'])) {
-  header('Location: /tags');
-  exit();
-}
+if(empty($_GET['name']) && empty($_POST['name']))
+  redirect('/tags');
 
 if(isset($_POST['name'])) {
   $tag->delete($_POST['name']);
-  header('Location: /tags');
-  exit();
+  redirect('/tags');
 }
 
 $name = $_GET['name'];
 
 echo html(title('Homespot - Delete Tag'),
-          navigation() .
+          navigation($user->is_authed()) .
           content(
             h1("Delete Tag - " . $_GET['name']) .
             form('post',

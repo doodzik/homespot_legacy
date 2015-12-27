@@ -15,10 +15,11 @@ if(!is_production()) {
 
 require('db.php');
 require('auth.php');
-require('trick_html.php');
 require('User.php');
 require('Trick.php');
 require('Tag.php');
+require('trick_html.php');
+require('tag_html.php');
 $user = new User($db, $_SESSION);
 require('html_fn/html_fn.php');
 ?>

@@ -12,13 +12,12 @@ if(isset($_GET['no_tags']))
 if(isset($_POST['name'])) {
   if(count($error) == 0) {
     $tag->create($_POST['name']);
-    header('Location: /tags');
-    exit();
+    redirect('/tags');
   }
 }
 
 echo html(title('Homespot - Create Tag'),
-          navigation() .
+          navigation($user->is_authed()) .
           content(
             h1("Create Tag") .
             input_err($error, 'no_tags') .

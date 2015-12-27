@@ -10,8 +10,7 @@ $err = '';
 if(isset($_POST['submit']) && $_POST['submit'] == 'good') {
   if(isset($_POST['trick_ids'])) {
     $trick->defer($_POST['trick_ids']);
-    header('Location: /');
-    exit();
+    redirect();
   } else {
     $err = 'select at least one track';
   }
@@ -20,8 +19,7 @@ if(isset($_POST['submit']) && $_POST['submit'] == 'good') {
 if(isset($_POST['submit']) && $_POST['submit'] == 'bad') {
   if(isset($_POST['track_ids'])) {
     $trick->reset($_POST['trick_ids']);
-    header('Location: /');
-    exit();
+    redirect();
   } else {
     $err = 'select at least one track';
   }
@@ -31,11 +29,9 @@ if(empty($_GET['tag_names'])) {
   $rows = $tag->all_names();
   if(count($rows) > 0) {
     $uri_query = http_build_query(array('tag_names' => $rows));
-    header("Location: /index.php?$uri_query");
-    exit();
+    redirect("/index.php?$uri_query");
   } else {
-    header('Location: /tag/create/index.php?no_tags=1');
-    exit();
+    redirect('/tag/create/index.php?no_tags=1');
   }
 }
 
@@ -54,7 +50,7 @@ if(count($tricks) == 0) {
 }
 
 echo html(title('Homespot'),
-          navigation() .
+          navigation($user->is_authed()) .
           content(
             h1("Current Tricks") .
             $err .

@@ -8,7 +8,7 @@ $tricks = $trick->names();
 $content = trick_names_ul($tricks);
 
 echo html(title('Homespot - All Tricks'),
-          navigation() .
+          navigation($user->is_authed()) .
           content(
             h1("All Tricks") .
             $content));

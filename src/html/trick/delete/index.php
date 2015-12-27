@@ -2,23 +2,20 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-if(empty($_GET['name']) && empty($_POST['name'])) {
-  header('Location: /');
-  exit();
-}
+if(empty($_GET['name']) && empty($_POST['name']))
+  redirect();
 
 $trick  = new Trick($db, $user->get_id());
 
 if(isset($_POST['name'])) {
   $trick->delete_by_name($user->get_id(), $_POST['name']);
-  header('Location: /tricks');
-  exit();
+  redirect('/tricks');
 }
 
 $name = $_GET['name'];
 
 echo html(title('Homespot - Delete Trick'),
-          navigation() .
+          navigation($user->is_authed()) .
           content(
             h1("Delete Trick - " . $_GET['name']) .
             form('post',

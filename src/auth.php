@@ -32,56 +32,13 @@ function send_login_mail ($to, $token) {
   mail($to, $subject, $message, $headers);
 }
 
-function create_user($db, $uuid, $email) {
-  $statement = $db->prepare('INSERT INTO USER (token, token_time, email)
-                              VALUES (:token, :token_time, :email)');
-  $statement->bindValue(":token", $uuid);
-  $statement->bindValue(":token_time", date('Y-m-d H:i:s', time()));
-  $statement->bindValue(":email", $email);
-  $count   = $statement->execute();
-
-  $user_id = $db->lastInsertId();
-
-  $statement = $db->prepare("INSERT INTO TAG (user_id, name)
-                              VALUES (:user_id, 'curb'),
-                                     (:user_id, 'flat'),
-                                     (:user_id, 'manual table'),
-                                     (:user_id, 'bank'),
-                                     (:user_id, 'rail')");
-  $statement->bindValue(":user_id", $user_id);
-  $statement->execute();
-
-  return $count;
-}
-
-function update_token($db, $uuid, $email) {
-  $statement = $db->prepare('UPDATE `USER`
-                              SET `token` = :token,
-                                  `token_time` = :token_time
-                              WHERE `email` = :email');
-  $statement->bindValue(":token", $uuid);
-  $statement->bindValue(":token_time", date('Y-m-d H:i:s', time()));
-  $statement->bindValue(":email", $email);
-  $count = $statement->execute();
-
-  return $count;
-}
-
-function logged_in() {
-  return isset($_SESSION['user_id']);
-}
-
-function redirect_authed() {
-  if(logged_in()) {
-    header('Location: /');
+function redirect($location = '/') {
+    header('Location: ' . $location);
     exit();
-  }
 }
 
-function redirect_not_authed() {
-  if(!logged_in()) {
-    header('Location: /auth/create/index.php');
-    exit();
-  }
+function redirect_authed($user) {
+  if($user->is_authed())
+    redirect();
 }
 ?>

@@ -2,8 +2,8 @@
 $root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
 require "$root/init.php";
 
-echo html(title('Homespot - Delete Trick'),
-          navigation() .
+echo html(title('Homespot - About'),
+          navigation($user->is_authed()) .
           content(
             h1('About') .
             p('abaut what') .

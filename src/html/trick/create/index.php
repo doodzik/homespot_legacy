@@ -21,29 +21,19 @@ if(isset($_POST['name'])) {
     if(count($error) == 0) {
       $trick_name_id = $trick->create_trick_name($name);
       $trick->create($trick_name_id, $prefixes);
-      header('Location: /');
-      exit();
+      redirect();
     }
   }
 }
 
 $rows  = $tag->all();
-$tags = '';
+$tags  = tag_ids_checkbox_ul($rows);
 
-if(count($rows) > 0) {
-    foreach ($rows as $tag) {
-      $tag_name = $tag['name'];
-      $tags .= li(checkbox_array('tag_ids', $tag['tag_id']) .
-                     ' -- ' .
-                     a($tag_name, "/tag/edit/index.php?name=$tag_name"));
-    }
-} else {
-  $tags   = 'you have no tags';
-}
-
+if(!$tags)
+  redirect('/tag/create/index.php?no_tags=1');
 
 echo html(title('Homespot - Create Trick'),
-          navigation() .
+          navigation($user->is_authed()) .
           content(
             h1("Create Trick") .
             form('post',

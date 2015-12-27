@@ -18,21 +18,60 @@ class User {
   }
 
   public function get_id() {
-    if($this->is_authed()) {
+    if($this->is_authed())
       return $this->id;
-    } else {
-      header('Location: /auth/create');
-      exit();
-    }
+    else
+      redirect('/auth/create');
   }
 
-  public function auth($token) {
+  public function authenticate($token) {
     $row = $this->by_token($token);
-    if(isset($row)) {
+    if(isset($row))
       $_SESSION['user_id'] = $row['user_id'];
-      return true;
-    }
-    return false;
+    return isset($_SESSION['user_id']);
+  }
+
+  public function by_email($email) {
+    $db = $this->db;
+    $statement = $db->prepare('SELECT user_id FROM USER WHERE email = :email LIMIT 1');
+    $statement->bindValue(":email", $email);
+    $statement->execute();
+    $row = $statement->fetchAll();
+    return $row;
+  }
+
+  public function create($uuid, $email) {
+    $statement = $this->db->prepare('INSERT INTO USER (token, token_time, email)
+                                VALUES (:token, :token_time, :email)');
+    $statement->bindValue(":token", $uuid);
+    $statement->bindValue(":token_time", date('Y-m-d H:i:s', time()));
+    $statement->bindValue(":email", $email);
+    $count   = $statement->execute();
+
+    $user_id = $this->db->lastInsertId();
+    
+    $tag = new Tag($this->db, $user_id);
+    $tag->create_default();
+  }
+
+  public function update_token($uuid, $email) {
+    $statement = $this->db->prepare('UPDATE `USER`
+                                SET `token` = :token,
+                                    `token_time` = :token_time
+                                WHERE `email` = :email');
+    $statement->bindValue(":token", $uuid);
+    $statement->bindValue(":token_time", date('Y-m-d H:i:s', time()));
+    $statement->bindValue(":email", $email);
+    $count = $statement->execute();
+  }
+
+  public function set_token($uuid, $email) {
+    $row = $this->by_email($email);
+    if(count($row) == 0)
+      $this->create($uuid, $email);
+    else
+      $this->update_token($uuid, $email);
+    return $uuid;
   }
 
   private function by_token($token) {
@@ -60,15 +99,5 @@ class User {
     $row = $stmt->fetch();
     return $row;
   }
-
-  public function by_email($email) {
-    $db = $this->db;
-    $statement = $db->prepare('SELECT user_id FROM USER WHERE email = :email LIMIT 1');
-    $statement->bindValue(":email", $email);
-    $statement->execute();
-    $row = $statement->fetchAll();
-    return $row;
-  }
 }
-
 ?>

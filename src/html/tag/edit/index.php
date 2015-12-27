@@ -6,21 +6,17 @@ $tag   = new Tag($db, $user->get_id());
 
 $error = array();
 
-if(empty($_GET['name']) && empty($_POST['name'])) {
-  header('Location: /');
-  exit();
-}
+if(empty($_GET['name']) && empty($_POST['name']))
+  redirect();
 
 if(isset($_POST['name'])) {
   $tag->update($_POST['name'], $_POST['old_name']);
-  header('Location: /tags');
-  exit();
-}
+  redirect('/tags');
 
 $name = $_GET['name'];
 
 echo html(title('Homespot - Edit tags'),
-          navigation() .
+          navigation($user->is_authed()) .
           content(
             h1("Edit Tags") .
             form('post',

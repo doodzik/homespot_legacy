@@ -1,6 +1,6 @@
 <?php
-function navigation () {
-  if(logged_in()) {
+function navigation ($is_authed) {
+  if($is_authed) {
     $str = a('Home', '/') .
            a('Create Trick', '/trick/create') .
            a('All Tricks', '/tricks') .

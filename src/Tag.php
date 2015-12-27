@@ -60,5 +60,16 @@ class Tag {
     $stmt->bindValue(':user_id', $user_id);
     $stmt -> execute();
   }
+
+  public function create_default() {
+    $statement = $this->db->prepare("INSERT INTO TAG (user_id, name)
+                                VALUES (:user_id, 'curb'),
+                                       (:user_id, 'flat'),
+                                       (:user_id, 'manual table'),
+                                       (:user_id, 'bank'),
+                                       (:user_id, 'rail')");
+    $statement->bindValue(":user_id", $this->user_id);
+    $statement->execute();
+  }
 }
 ?>

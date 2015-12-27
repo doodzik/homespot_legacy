@@ -4,10 +4,8 @@ require "$root/init.php";
 
 $error = array();
 
-if(empty($_GET['name']) && empty($_POST['name'])) {
-  header('Location: /');
-  exit();
-}
+if(empty($_GET['name']) && empty($_POST['name']))
+  redirect();
 
 $name  = (isset($_GET['name'])) ? $_GET['name'] : $_POST['name'];
 
@@ -23,17 +21,9 @@ $directions_old = array_select_key($tricks, 'direction');
 
 $tags_all  = $tag->all();
 
-$tags_echo = '';
-if(count($tags_all) > 0) {
-  foreach ($tags_all as $tag) {
-    $tags_echo .= li(checkbox_array('tag_ids', $tag['tag_id'], in_array($tag['tag_id'], $tags_old)) .
-                     ' --- ' .
-                     a($tag['name'], "/tag/edit/index.php?name=" . $tag['name']));
-  }
-} else {
-  header('Location: /tag/create/index.php?no_tags=1');
-  exit();
-}
+$tags_echo = tag_ids_checkbox_ul($tags_all, $tags_old);
+if(!$tags_echo)
+  redirect('/tag/create/index.php?no_tags=1');
 
 if(isset($_POST['name'])) {
   if(strlen(validate_name($_POST['name'])) > 0)
@@ -51,13 +41,12 @@ if(isset($_POST['name'])) {
     $trick->delete($trick_name_id, $delete_tricks);
     $trick->update_name($_POST['old_name'], $_POST['name']);
 
-    header('Location: /tricks');
-    exit();
+    redirect('/tricks');
   }
 }
 
 echo html(title('Homespot - Edit Trick'),
-          navigation() .
+          navigation($user->is_authed()) .
           content(
             h1("Edit Trick") .
             input_err($error, 'name') .
