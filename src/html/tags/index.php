@@ -14,6 +14,6 @@ echo html(title('Homespot - All Tags'),
           navigation($user->is_authed()) .
           content(
             h1("All Tags") .
-            ul($content)));
+            $content));
 ?>
 

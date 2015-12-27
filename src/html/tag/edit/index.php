@@ -12,6 +12,7 @@ if(empty($_GET['name']) && empty($_POST['name']))
 if(isset($_POST['name'])) {
   $tag->update($_POST['name'], $_POST['old_name']);
   redirect('/tags');
+}
 
 $name = $_GET['name'];
 

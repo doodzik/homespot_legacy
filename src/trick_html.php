@@ -17,6 +17,26 @@ function trick_link($trick_name) {
   return a($trick_name, "/trick/edit/index.php?name=" . $trick_name);
 }
 
+function trick_full_name($trick_name, $direction, $stance, $tag) {
+  $direction = ($direction == 'none') ? '' : $direction;
+  $stance = ($stance == 'normal') ? '' : $stance;
+  return trim($stance . ' ' . $direction . ' ' . trick_link($trick_name) . ': ' . $tag);
+}
+
+
+function trick_names_checkbox_ul($tricks) {
+  if(count($tricks) > 0) {
+    $content = '';
+    foreach ($tricks as $trick)
+      $content .= li(checkbox_array('trick_ids', $trick['trick_id']) .
+                  ' --- ' .
+                  trick_full_name($trick['name'], $trick['direction'], $trick['stance'], $trick['tag_name']));
+    $content = ul($content);
+  } else {
+  }
+  return $content;
+}
+
 function trick_names_ul($tricks) {
   if(count($tricks) > 0) {
     $content = '';

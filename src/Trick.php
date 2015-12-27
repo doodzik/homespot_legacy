@@ -1,5 +1,4 @@
 <?php
-include 'TrickRow.php';
 include 'trick_fn.php';
 
 class Trick {

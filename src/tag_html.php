@@ -13,7 +13,7 @@ function tag_names_ul($tags) {
   if(count($tags) > 0) {
     $content = '';
     foreach ($tags as $tag)
-      $content .= li(tag_link($tag_name));
+      $content .= li(tag_link($tag['name']));
     $content = ul($content);
     return $content;
   } else {

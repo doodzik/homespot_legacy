@@ -39,15 +39,11 @@ $tag_names = $_GET['tag_names'];
 $filters   = join(', ', $tag_names);
 $tags_query = http_build_query(array('tag_names' => $tag_names));
 
-$tricks  = gen_trick_rows($trick->current($tag_names));
+$tricks  = $trick->current($tag_names);
 
-$content = '';
-if(count($tricks) == 0) {
+$content = trick_names_checkbox_ul($tricks);
+if(!$content)
   $content = 'you have no tricks';
-} else {
-  foreach ($tricks as $trick)
-    $content .= $trick;
-}
 
 echo html(title('Homespot'),
           navigation($user->is_authed()) .
@@ -60,5 +56,5 @@ echo html(title('Homespot'),
             form('post',
               submit('good') .
               submit('bad') .
-              ul($content))));
+              $content)));
 ?>
