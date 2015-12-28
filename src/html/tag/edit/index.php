@@ -4,8 +4,6 @@ require "$root/init.php";
 
 $tag   = new Tag($db, $user->get_id());
 
-$error = array();
-
 if(empty($_GET['name']) && empty($_POST['name']))
   redirect();
 

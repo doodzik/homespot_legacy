@@ -4,8 +4,6 @@ require "$root/init.php";
 
 $tag   = new Tag($db, $user->get_id());
 
-$error = array();
-
 if(isset($_POST['tag_names'])) {
   $uri_query = http_build_query(array('tag_names' => $_POST['tag_names']));
   redirect("/index.php?$uri_query");

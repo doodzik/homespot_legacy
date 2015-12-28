@@ -24,6 +24,8 @@ echo html(title('Homespot - Sign In/Up'),
           navigation($user->is_authed()) .
           content(
             h1("Sign In/Up") .
+            p('This website uses cookies to check if you are authenticated or not.') .
+            p('By signing in or up you permit us to do so.') .
             form('post',
               input_err($error, 'email') .
               input('email') .
