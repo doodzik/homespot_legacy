@@ -17,7 +17,7 @@ if(isset($_POST['submit']) && $_POST['submit'] == 'good') {
 }
 
 if(isset($_POST['submit']) && $_POST['submit'] == 'bad') {
-  if(isset($_POST['track_ids'])) {
+  if(isset($_POST['trick_ids'])) {
     $trick->reset($_POST['trick_ids']);
     redirect();
   } else {
@@ -42,8 +42,14 @@ $tags_query = http_build_query(array('tag_names' => $tag_names));
 $tricks  = $trick->current($tag_names);
 
 $content = trick_names_checkbox_ul($tricks);
-if(!$content)
-  $content = 'you have no tricks';
+if($content) {
+  $content = form('post',
+                  submit('good') .
+                  submit('bad') .
+                  $content);
+} else {
+  $content = p('you have no more tricks to do');
+}
 
 echo html(title('Homespot'),
           navigation($user->is_authed()) .
@@ -53,8 +59,5 @@ echo html(title('Homespot'),
             a('change filters', '/tricks/current/filter/index.php?' . $tags_query) .
             br() .
             p("current filters: $filters") .
-            form('post',
-              submit('good') .
-              submit('bad') .
-              $content)));
+            $content));
 ?>

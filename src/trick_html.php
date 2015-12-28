@@ -1,14 +1,14 @@
 <?php
 function navigation ($is_authed) {
   if($is_authed) {
-    $str = a('Home', '/') .
-           a('Create Trick', '/trick/create') .
-           a('All Tricks', '/tricks') .
-           a('Create Tag', '/tag/create') .
-           a('All Tags', '/tags') .
-           a('Logout', '/auth/delete');
+    $str = a('Current', '/') . '&nbsp;' .
+           a('Create Trick', '/trick/create') . '&nbsp;' .
+           a('All Tricks', '/tricks') . '&nbsp;' .
+           a('Create Tag', '/tag/create') .'&nbsp;' .
+           a('All Tags', '/tags') . '&nbsp;' .
+           a('Logout', '/auth/delete') . '&nbsp;';
   } else {
-    $str = a('Sign In/Up', '/auth/create');
+    $str = a('Sign In/Up', '/auth/create') . '&nbsp;';
   }
   return nav($str . a('About', '/about'));
 }
@@ -31,10 +31,10 @@ function trick_names_checkbox_ul($tricks) {
       $content .= li(checkbox_array('trick_ids', $trick['trick_id']) .
                   ' --- ' .
                   trick_full_name($trick['name'], $trick['direction'], $trick['stance'], $trick['tag_name']));
-    $content = ul($content);
+    return ul($content);
   } else {
+    return false;
   }
-  return $content;
 }
 
 function trick_names_ul($tricks) {

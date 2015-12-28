@@ -35,44 +35,44 @@ class Trick {
     $user_id = $this->user_id;
     $db = $this->db;
     $query = $db->prepare('UPDATE TRICK
-                            SET reset = :reset, interval = :interval
+                            SET `reset` = :reset, `interval` = :interval
                             WHERE trick_id = :trick_id
                               AND user_id  = :user_id');
+    $stmt = $db->prepare('SELECT * 
+                            FROM TRICK 
+                            WHERE trick_id = :trick_id 
+                              AND user_id = :user_id 
+                            LIMIT 1');
     foreach ($trick_ids as $trick_id) {
-      $stmt = $db->prepare('SELECT interval
-                              FROM TRICK
-                              WHERE user_id  = :user_id
-                                AND trick_id = :trick_id
-                              LIMIT 1');
-      $stmt->bindValue(':trick_id', $trick_id);
-      $stmt->bindValue(':user_id', $user_id);
+      $stmt->bindValue(':trick_id', $trick_id, PDO::PARAM_INT);
+      $stmt->bindValue(':user_id',  $this->user_id, PDO::PARAM_INT);
       $stmt->execute();
       $row = $stmt->fetch();
 
-      if(empty($row))
+      if(!$row)
         continue;
 
       $query->bindValue(':trick_id', $trick_id);
-      $query->bindValue(':user_id', $user_id);
+      $query->bindValue(':user_id', $this->user_id);
       $query->bindValue(':reset', date('Y-m-d', strtotime('+' . $row['interval'] . ' days')));
       $query->bindValue(':interval', $row['interval'] * 2);
-      $query->execute();
+      $count = $query->execute();
     }
   }
 
   public function reset($trick_ids) {
     $user_id = $this->user_id;
     $db = $this->db;
-    $query = $db->prepare('UPDATE TRICK
-                            SET reset = :reset, interval = :interval
-                            WHERE trick_id = :trick_id
-                              AND user_id  = :user_id');
+    $stmt = $db->prepare('UPDATE TRICK
+                            SET `reset` = :reset, `interval` = :interval
+                            WHERE `trick_id` = :trick_id
+                              AND `user_id`  = :user_id');
     foreach ($trick_ids as $trick_id) {
         $stmt->bindValue(':trick_id', $trick_id);
         $stmt->bindValue(':user_id', $user_id);
         $stmt->bindValue(':reset', date('Y-m-d', strtotime('+1 days')));
         $stmt->bindValue(':interval', 1);
-        $query->execute();
+        $stmt->execute();
     }
   }
 
