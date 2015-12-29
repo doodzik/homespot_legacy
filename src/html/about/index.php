@@ -1,6 +1,5 @@
 <?php
-$root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
-require "$root/init.php";
+require(__DIR__ . '/../../init.php');
 
 echo html(title('Homespot - About'),
           navigation($user->is_authed()) .

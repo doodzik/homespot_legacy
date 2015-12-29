@@ -1,6 +1,5 @@
 <?php
-$root = realpath($_SERVER["DOCUMENT_ROOT"]) . '/..';
-require "$root/init.php";
+require(__DIR__ . '/../../../init.php');
 
 $trick = new Trick($db, $user->get_id());
 $tag   = new Tag($db, $user->get_id());
