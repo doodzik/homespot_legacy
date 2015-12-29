@@ -48,4 +48,3 @@ function tag_ids_checkbox_ul($tags, $tag_defaults = array()) {
 }
 
 ?>
-

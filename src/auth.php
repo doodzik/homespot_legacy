@@ -22,11 +22,11 @@ function gen_uuid() {
 }
 
 function send_login_mail ($to, $token) {
-  $message = "In order to login into Homespot you need to click on this link: http://homespot.dudzik.co/auth/confirm.php?token=$token
+  $message = "In order to login into Homespot you need to click on this link: http://homespot.321157.eu/auth/confirm.php?token=$token
  you have to login within an hour!";
   $subject = 'Loging in';
-  $headers = 'From: noreply@dudzik.co' . "\r\n" .
-    'Reply-To: webmaster@dudzik.co' . "\r\n" .
+  $headers = 'From: noreply@321157.eu' . "\r\n" .
+    'Reply-To: webmaster@321157.eu' . "\r\n" .
     'X-Mailer: PHP/' . phpversion();
 
   mail($to, $subject, $message, $headers);

@@ -1,13 +1,13 @@
 <?php
 ini_set('session.cookie_httponly', true);
 session_start();
+require('env.php');
 
 function is_production() {
-  return !!getenv("PRODUCTION");
+  return getenv("PRODUCTION") !== false;
 }
 
 if(!is_production()) {
-  require('env.php');
   error_reporting(E_ALL);
   ini_set('display_errors', 1);
   ini_set('display_startup_errors', 1);
