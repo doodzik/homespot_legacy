@@ -48,7 +48,8 @@
 
   function form ($request, $content) {
     $backtrace = debug_backtrace();
-    $path = str_replace($_SERVER['DOCUMENT_ROOT'], "", $backtrace[0]['file']);
+    $str  = $backtrace[0]['file'];
+    $path = substr(strstr($str, 'html/'), 4);
     return "<form action=\"$path\" method=\"$request\">$content</form>";
   }
 
