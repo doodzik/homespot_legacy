@@ -2,6 +2,7 @@
 ini_set('session.cookie_httponly', true);
 session_start();
 require('env.php');
+require('db.php');
 
 function is_production() {
   return getenv("PRODUCTION") !== false;
@@ -11,9 +12,8 @@ if(!is_production()) {
   error_reporting(E_ALL);
   ini_set('display_errors', 1);
   ini_set('display_startup_errors', 1);
+  $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 }
-
-require('db.php');
 require('auth.php');
 require('User.php');
 require('Trick.php');

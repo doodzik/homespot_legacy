@@ -15,7 +15,7 @@ function compare_prefixes($as, $bs) {
   return $rest;
 }
 
-function generate_prefixes($stances, $directions, $tags) {
+function generate_prefixes($stances, $directions, $tag_ids) {
   $prefixes = array();
   foreach ($stances as $stance) {
     if($stance != 'normal' && $stance != 'nolli' && $stance != 'switch' && $stance != 'fakie')

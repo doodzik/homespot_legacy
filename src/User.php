@@ -52,6 +52,9 @@ class User {
     
     $tag = new Tag($this->db, $user_id);
     $tag->create_default();
+    $tag_id = $tag->by_name('flat');
+    $trick  = new Trick($this->db, $user_id);
+    $trick->create_default($tag_id);
   }
 
   public function update_token($uuid, $email) {

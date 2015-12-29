@@ -38,10 +38,10 @@ class Trick {
                             SET `reset` = :reset, `interval` = :interval
                             WHERE trick_id = :trick_id
                               AND user_id  = :user_id');
-    $stmt = $db->prepare('SELECT * 
-                            FROM TRICK 
-                            WHERE trick_id = :trick_id 
-                              AND user_id = :user_id 
+    $stmt = $db->prepare('SELECT *
+                            FROM TRICK
+                            WHERE trick_id = :trick_id
+                              AND user_id = :user_id
                             LIMIT 1');
     foreach ($trick_ids as $trick_id) {
       $stmt->bindValue(':trick_id', $trick_id, PDO::PARAM_INT);
@@ -136,12 +136,12 @@ class Trick {
 
   public function create_trick_name($name) {
     $user_id = $this->user_id;
-    $db = $this->db;
+    $db      = $this->db;
     $query_trick_name = 'INSERT INTO TRICK_NAME (name, user_id) VALUES (:name, :user_id)';
-    $stmt_trick_name = $db -> prepare($query_trick_name);
+    $stmt_trick_name  = $db -> prepare($query_trick_name);
     $stmt_trick_name->bindValue(':name', $name);
-    $stmt_trick_name->bindValue(':user_id', $_SESSION['user_id']);
-    $stmt_trick_name -> execute();
+    $stmt_trick_name->bindValue(':user_id', $user_id);
+    $stmt_trick_name->execute();
     return $db->lastInsertId();
   }
 
@@ -192,6 +192,16 @@ class Trick {
     $stmt->bindParam(':old_name', $old_name, PDO::PARAM_STR);
     $stmt->bindParam(':user_id', $user_id);
     $stmt->execute();
+  }
+
+  public function create_default($tag_id) {
+    $stances       = array('normal', 'nolli', 'switch', 'fakie');
+    $directions    = array('none');
+    $tag_ids       = array($tag_id['tag_id']);
+    $create_trick  = generate_prefixes($stances, $directions, $tag_ids);
+    $trick_name_id = $this->create_trick_name('olli');
+
+    $this->create($trick_name_id, $create_trick);
   }
 }
 ?>

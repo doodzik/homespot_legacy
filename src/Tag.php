@@ -13,9 +13,25 @@ class Tag {
                 WHERE user_id = :user_id
                 ORDER BY `name` ASC';
     $stmt = $db -> prepare($query);
-    $stmt -> bindValue(':user_id', $_SESSION['user_id']);
+    $stmt -> bindValue(':user_id', $this->user_id);
     $stmt -> execute();
     $rows  = $stmt->fetchAll();
+    return $rows;
+  }
+
+  public function by_name($name) {
+    $user_id = $this->user_id;
+    $db = $this->db;
+    $query = 'SELECT tag_id, name
+                FROM TAG
+                WHERE user_id = :user_id
+                  AND name = :name
+                LIMIT 1';
+    $stmt = $db -> prepare($query);
+    $stmt -> bindValue(':user_id', $this->user_id);
+    $stmt -> bindValue(':name', $name);
+    $stmt -> execute();
+    $rows  = $stmt->fetch();
     return $rows;
   }
 
