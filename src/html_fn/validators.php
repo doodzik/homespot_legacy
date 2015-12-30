@@ -7,7 +7,7 @@
   }
 
   function validate_name($name) {
-    if(strlen($name >= 150))
+    if(strlen($name) >= 150)
       return 'name too long';
     return '';
   }

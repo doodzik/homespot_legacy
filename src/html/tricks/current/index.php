@@ -6,7 +6,7 @@ $tag   = new Tag($db, $user->get_id());
 
 $err = '';
 
-if(isset($_POST['submit']) && $_POST['submit'] == 'good') {
+if(isset($_POST['submit']) && $_POST['submit'] == 'defer') {
   if(isset($_POST['trick_ids'])) {
     $trick->defer($_POST['trick_ids']);
     redirect();
@@ -15,7 +15,7 @@ if(isset($_POST['submit']) && $_POST['submit'] == 'good') {
   }
 }
 
-if(isset($_POST['submit']) && $_POST['submit'] == 'bad') {
+if(isset($_POST['submit']) && $_POST['submit'] == 'reset') {
   if(isset($_POST['trick_ids'])) {
     $trick->reset($_POST['trick_ids']);
     redirect();
@@ -43,8 +43,8 @@ $tricks  = $trick->current($tag_names);
 $content = trick_names_checkbox_ul($tricks);
 if($content) {
   $content = form('post',
-                  submit('good') .
-                  submit('bad') .
+                  submit('defer') .
+                  submit('reset') .
                   $content);
 } else {
   $content = p('you have no more tricks to do');

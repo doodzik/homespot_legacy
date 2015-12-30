@@ -96,8 +96,8 @@ class Trick {
     $db = $this->db;
     $sql = "SELECT trick_name_id
               FROM TRICK_NAME
-              WHERE name = :name
-                AND user_id = :user_id
+              WHERE `name` = :name
+                AND `user_id` = :user_id
               LIMIT 1";
     $stmt = $db->prepare($sql);
     $stmt->bindParam(':name', $name);
