@@ -42,7 +42,8 @@ $tricks  = $trick->current($tag_names);
 
 $content = trick_names_checkbox_ul($tricks);
 if($content) {
-  $content = form('post',
+  $content = p('trick count: ' . count($tricks)) .
+             form('post',
                   submit('defer') .
                   submit('reset') .
                   $content);

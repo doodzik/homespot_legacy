@@ -10,5 +10,6 @@ echo html(title('Homespot - All Tricks'),
           navigation($user->is_authed()) .
           content(
             h1("All Tricks") .
+            p('trick count: ' . count($tricks)) .
             $content));
 ?>

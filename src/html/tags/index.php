@@ -13,6 +13,7 @@ echo html(title('Homespot - All Tags'),
           navigation($user->is_authed()) .
           content(
             h1("All Tags") .
+            p('tag count: ' . count($rows)) .
             $content));
 ?>
 
