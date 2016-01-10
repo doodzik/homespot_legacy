@@ -21,7 +21,5 @@ echo html(title('Homespot - Delete Tag'),
             h1("Delete Tag - " . $_GET['name']) .
             form('post',
               hidden('name', $_GET['name']) .
-              submit('DELETE')
-            )));
+              submit('DELETE'))));
 ?>
-

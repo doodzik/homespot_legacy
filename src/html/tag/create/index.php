@@ -23,7 +23,5 @@ echo html(title('Homespot - Create Tag'),
             form('post',
               input_err($error, 'name') .
               input('text', 'name') .
-              submit()
-            )));
+              submit())));
 ?>
-

@@ -23,4 +23,3 @@ echo html(title('Homespot - Edit tags'),
               submit()) .
             a('delete tag', "/tag/delete/index.php?name=$name")));
 ?>
-
